@@ -1,4 +1,6 @@
-#generic algorithm React native
+##generic algorithm React native
+
+generic algorithm is located in function solve in file App.js
 
 Follow this steps to install
 ```
