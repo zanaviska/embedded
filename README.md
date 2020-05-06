@@ -20,7 +20,7 @@ on IOS:
 ```
 npm start(or yarn start or npx react native start)// sometimes you may skip this step
 
-open ios/embedded.xcodeproj in android studio and press run on device
+open ios/embedded.xcodeproj in xCode and press run on device
 **or**
 npx react-native run-ios
 ```
