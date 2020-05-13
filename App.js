@@ -10,8 +10,22 @@ import {
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-const solve = (x1, x2, x3, x4, y) => {
-  const size = 20;
+let best = 10
+let gensize = {
+  '10': 0,
+  '20': 0,
+  '30': 0,
+  '40': 0,
+  '50': 0,
+  '60': 0,
+  '70': 0,
+  '80': 0,
+  '90': 0,
+  '100': 0,
+}
+
+const solve = (x1, x2, x3, x4, y, size) => {
+  //const size = 20;
   const equal = (a, b) => (
       a.a === b.a &&
       a.b === b.b &&
@@ -20,13 +34,18 @@ const solve = (x1, x2, x3, x4, y) => {
   )
   const fn = arg => arg.a* x1 + arg.b * x2 + arg.c * x3 + arg.d * x4;
   let population = [...new Array(size)].map(() => ({a: Math.round(2*y*Math.random() - y), b: Math.round(2*y*Math.random() - y), c: Math.round(2*y*Math.random() - y), d: Math.round(2*y*Math.random() - y)}));
-  let it = 20;
-  while(it++) {
-      //console.log('\n', it)
+  let it = 0;
+  while(++it) {
+      //console.log('\n\n\n', it);
+      //console.log(population);
       let sum = 0.0;
       for(const elem of population) {
           const value = fn(elem) - y;
-          if(value === 0) return elem;
+          if(value === 0) {
+            gensize[size] = it;
+            if(it < gensize[best]) best = size;
+            return elem;
+          }
           elem.dif = elem.dif || value
           sum += Math.abs(1/value);
       }
@@ -150,7 +169,19 @@ export default class App extends Component {
               onPress={() => this.setState(
                 {spinner: true}, 
                 () => setTimeout(
-                  () => this.setState(solve(this.state.x1, this.state.x2, this.state.x3, this.state.x4, this.state.y), () => this.setState({spinner: false})),
+                  () => {
+                    best = 10;
+                    solve(this.state.x1, this.state.x2, this.state.x3, this.state.x4, this.state.y, 10);
+                    solve(this.state.x1, this.state.x2, this.state.x3, this.state.x4, this.state.y, 30);
+                    solve(this.state.x1, this.state.x2, this.state.x3, this.state.x4, this.state.y, 40);
+                    solve(this.state.x1, this.state.x2, this.state.x3, this.state.x4, this.state.y, 50);
+                    solve(this.state.x1, this.state.x2, this.state.x3, this.state.x4, this.state.y, 60);
+                    solve(this.state.x1, this.state.x2, this.state.x3, this.state.x4, this.state.y, 70);
+                    solve(this.state.x1, this.state.x2, this.state.x3, this.state.x4, this.state.y, 80);
+                    solve(this.state.x1, this.state.x2, this.state.x3, this.state.x4, this.state.y, 90);
+                    solve(this.state.x1, this.state.x2, this.state.x3, this.state.x4, this.state.y, 100);
+                    this.setState(solve(this.state.x1, this.state.x2, this.state.x3, this.state.x4, this.state.y, 20), () => this.setState({spinner: false}))
+                  },
                   50
                 )
                 /*async () => console.log(
@@ -165,7 +196,18 @@ export default class App extends Component {
           <Text>b = {this.state.b}</Text>
           <Text>c = {this.state.c}</Text>
           <Text>d = {this.state.d}</Text>
-        
+          <Text />
+          <Text>популяція 10 -- {gensize['10']} генерацій</Text>
+          <Text>популяція 20 -- {gensize['20']} генерацій</Text>
+          <Text>популяція 30 -- {gensize['30']} генерацій</Text>
+          <Text>популяція 40 -- {gensize['40']} генерацій</Text>
+          <Text>популяція 50 -- {gensize['50']} генерацій</Text>
+          <Text>популяція 60 -- {gensize['60']} генерацій</Text>
+          <Text>популяція 70 -- {gensize['70']} генерацій</Text>
+          <Text>популяція 80 -- {gensize['80']} генерацій</Text>
+          <Text>популяція 90 -- {gensize['90']} генерацій</Text>
+          <Text>популяція 100 -- {gensize['100']} генерацій</Text>
+          <Text>Найменша кількість генерацій при популяції = {best} особ</Text>
         </ScrollView>
       </SafeAreaView>
     );
